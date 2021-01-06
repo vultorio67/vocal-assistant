@@ -15,7 +15,9 @@ if %chiffre%==yes (
 	py -m pip install gTTS
 	py -m pip install playsound
 	py -m pip install pyaudio
+	py -m pip install translate-api
+	py -m pip install translate
 	echo
 	echo if pyaudio installation did not work please run "pyaudio.bat"
-	) else (echo the program will not working!!!) 
+	) else (echo "the program will not working!!!") 
 pause>nul
