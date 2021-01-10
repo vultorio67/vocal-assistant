@@ -1,4 +1,4 @@
-import speech_recognition as sr
+   import speech_recognition as sr
 import pyttsx3
 import datetime
 import wikipedia
@@ -21,7 +21,7 @@ from PyQt5.QtCore import (Qt, QTimer)
 from PyQt5.QtWidgets import (QWidget, QLCDNumber, QSlider, QVBoxLayout, QApplication, QPushButton, QGridLayout, QHBoxLayout, QLabel)
 from PyQt5.QtGui import (QFont, QPainter, QColor)
 from PyQt5.QtCore import QPropertyAnimation, QPoint, QEasingCurve
-from translate import Translator
+import translate
 
 
 class MyWindow(QMainWindow):
@@ -52,7 +52,7 @@ class MyWindow(QMainWindow):
 
         self.me = QtWidgets.QLabel(self)
         self.me.setGeometry(QtCore.QRect(130, 170, 461, 81))
-        self.me.setStyleSheet("color: blue") 
+        self.me.setStyleSheet("color: #F14800") 
         font = QtGui.QFont()
         font.setPointSize(12)
         font.setBold(True)
@@ -86,7 +86,7 @@ class MyWindow(QMainWindow):
         font.setBold(True)
         font.setWeight(75)
         self.title.setFont(font)
-        self.title.setObjectName("label1")
+        self.title.setObjectName("SWI")
         self.title.setText("SWI")
 
 
@@ -149,6 +149,8 @@ class MyWindow(QMainWindow):
                     except Exception as e:
                         print("e")
                         said = "sasa"
+                        self.label.setText("Sorry I didn't understand")
+                        speak("Sorry I didn't understand")
                 return said
 
             statement = takeCommand().lower()
@@ -188,7 +190,7 @@ class MyWindow(QMainWindow):
                 self.label.adjustSize()
                 speak(results)
 
-            elif 'open youtube' in statement:
+            elif 'youtube' in statement:
                 time.sleep(0.5)
                 webbrowser.open_new_tab("https://www.youtube.com")
                 self.label.setText('youtube is open now')
@@ -196,7 +198,7 @@ class MyWindow(QMainWindow):
                 speak('youtube is open now.')
                 time.sleep(5)
 
-            elif 'open google' in statement:
+            elif 'google' in statement:
                 time.sleep(0.5)
                 webbrowser.open_new_tab("https://www.google.com")
                 self.label.setText("Google is open now.")
@@ -204,7 +206,7 @@ class MyWindow(QMainWindow):
                 speak("Google is open now.")
                 time.sleep(5)
 
-            elif 'open gmail' in statement:
+            elif 'gmail' in statement:
                 time.sleep(0.5)
                 webbrowser.open_new_tab("gmail.com")
                 self.label.setText("Google Mail open now")
@@ -218,6 +220,7 @@ class MyWindow(QMainWindow):
                 self.label.adjustSize()
                 speak("I like help you")
                 time.sleep(5)
+
 
             elif "weather" in statement:
                 time.sleep(0.5)
@@ -292,10 +295,6 @@ class MyWindow(QMainWindow):
                 speak('Here are some headlines from the bfmtv sites.')
                 time.sleep(6)
 
-            #francais : cette merde ne marche pas putaiiiiiiiiiiiiiiiiiiiiiiiiinnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn =)
-            #elif "camera" in statement or "take a photo" in statement:
-                #ec.capture(0,"robo camera","img.jpg")
-
            # elif 'search'  in statement:
             #    statement = statement.replace("search", "")
              #   webbrowser.open_new_tab(statement)
@@ -323,32 +322,32 @@ class MyWindow(QMainWindow):
                 speak("Ok , your pc will log off in 10 sec make \nsure you exit from all applications")
                 subprocess.call(["shutdown", "/l"])
 
-            elif "turn on" in statement or "tusdsdsdsdsdsdsdsdsdsdsdsdsdsdrn off" in statement:
+            elif "turn on" in statement:
 
                 if "strip" in statement :
                     time.sleep(0.5)
-                    x = requests.get('http://192.168.1.64/control?cmd=gpio,12,0')
+                    x = requests.get('http://192.168.1.66/control?cmd=gpio,0,0')
                     self.label.setText("strip led is turn on.")
                     self.label.adjustSize()
                     speak("strip led is turn on.")
-                if "strip" in statement :
+                if "back" in statement :
                     time.sleep(0.5)
-                    x = requests.get('http://192.168.1.64/control?cmd=gpio,15,0')
+                    x = requests.get('http://192.168.1.66/control?cmd=gpio,0,1')
                     lf.label.setText("strip led is turn on.")
                     self.label.adjustSize()
                     speak("strip led is turn on.")
 
-            elif "turn off" in statement or "tusdsdsdsdsdsdsdsdsdsdsdsdsdsdrn off" in statement:
+            elif "turn off" in statement:
 
                 if "strip" in statement :
                     time.sleep(0.5)
-                    x = requests.get('http://192.168.1.64/control?cmd=gpio,12,1')
+                    x = requests.get('http://192.168.1.66/control?cmd=gpio,13,0')
                     self.label.setText("strip led is turn off.")
                     self.label.adjustSize()
                     speak("strip led is turn off.")
-                if "strip" in statement :
+                if "back" in statement :
                     time.sleep(0.5)
-                    x = requests.get('http://192.168.1.64/control?cmd=gpio,15,1')
+                    x = requests.get('http://192.168.1.66/control?cmd=gpio,13,1')
                     self.label.setText("strip led is turn off.")
                     self.label.adjustSize()
                     speak("strip led is turn off.")
@@ -375,7 +374,25 @@ class MyWindow(QMainWindow):
                 self.label.adjustSize()
                 speak("in which language do you want to translate?")
                 language=takeCommand()
-                language = language.replace("in French", "french")
+                language = language.replace("in", "")
+                translator= Translator(from_lang="english",to_lang=language)
+                translation = translator.translate(statement)
+                print (translation)
+                self.label.setText(statement+" in "+language+" mean with \nmy english accent"+translation)
+                self.label.adjustSize()
+                speak(statement+" in "+language+" mean with my english accent"+translation)
+
+
+            elif "translate" in statement:
+            	#if "in" in statement:
+            		
+                statement = statement.replace("translate", "")
+                print(statement)
+                self.label.setText("in which language do you want to translate?")
+                self.label.adjustSize()
+                speak("in which language do you want to translate?")
+                language=takeCommand()
+                language = language.replace("in", "")
                 translator= Translator(from_lang="english",to_lang=language)
                 translation = translator.translate(statement)
                 print (translation)
@@ -397,6 +414,44 @@ class MyWindow(QMainWindow):
 
 def window():
     app = QApplication(sys.argv)
+    style = """
+    	QWidget{
+    		background: #051233
+    	}
+    	QLabel#SWI{
+    		color: #0EDFFB;
+    	}
+
+    	QPushButton:hover
+    	{
+    		color: #B93A03
+
+    	}
+    	QLabel#label1
+    	{
+    background-color: red;
+    border-style: outset;
+    border-width: 2px;
+    border-radius: 10px;
+    border-color: beige;
+    font: bold 14px;
+    min-width: 10em;
+    padding: 6px;
+    	}
+
+    	   QLabel#me
+    	{
+    background-color: green;
+    border-style: outset;
+    border-width: 2px;
+    border-radius: 10px;
+    border-color: beige;
+    font: bold 14px;
+    min-width: 10em;
+    padding: 6px;
+    	}
+    """
+    app.setStyleSheet(style)
     win = MyWindow()
     win.show()
     sys.exit(app.exec_())
