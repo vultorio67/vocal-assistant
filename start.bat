@@ -1,2 +1,2 @@
-py voice-assistant.py   
+py src/voice-assistant.py   
 pause>nul
