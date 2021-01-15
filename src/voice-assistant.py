@@ -22,7 +22,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 import translate
-import info
+from translate import Translator
+import getInfo
 
 
 class MyWindow(QMainWindow):
@@ -145,7 +146,7 @@ class MyWindow(QMainWindow):
 
             def takeCommand():
 
-                info.exist()
+                getInfo.exist()
 
                 r = sr.Recognizer()
                 with sr.Microphone() as source:
@@ -158,7 +159,7 @@ class MyWindow(QMainWindow):
                         self.me.setText(said)
                     except Exception as e:
                         print("e")
-                        said = "sasa"
+                        said = False
                         self.label.setText("Sorry I didn't understand")
                         speak("Sorry I didn't understand")
                 return said
@@ -172,10 +173,18 @@ class MyWindow(QMainWindow):
                 sys.exit()
 
             elif "hello" in statement or "hie" in statement:
-                tName = info.read_info('name')
+                tName = getInfo.read_info('name')
                 time.sleep(0.5)
                 self.label.setText("hello " + tName +", \nhow can i help you?")
                 speak('hello ' + tName +', how can i help you?')
+
+            elif "me" and "know" in statement:
+                self.label.setText("this is what i know about you. \nYour name is " + getInfo.read_info('name') + ", you have " + getInfo.read_info('age') + 
+                " years old, \nyou leave in " + getInfo.read_info('country'))
+
+                speak("this is what i know about you. \nYour name is " + getInfo.read_info('name') + ", you have " + getInfo.read_info('age') + 
+                " years old, \nyou leave in " + getInfo.read_info('country'))
+
 
 
             elif 'crazy' in statement or 'fuck' in statement or "whore" in statement or "f***" in statement:
@@ -216,14 +225,14 @@ class MyWindow(QMainWindow):
                 speak("Google Mail open now")
                 time.sleep(5)
 
-            elif 'what do you like' in statement:
+            elif 'what' and 'like'in statement:
                 time.sleep(0.5)
                 self.label.setText("I like help you")
                 speak("I like help you")
                 time.sleep(5)
 
 
-            elif "weather" in statement:
+            elif "weather"in statement:
                 time.sleep(0.5)
                 api_key="64f7f61815d3b00e86678284fcc41ff7"
                 base_url="https://api.openweathermap.org/data/2.5/weather?"
@@ -265,10 +274,10 @@ class MyWindow(QMainWindow):
                 self.label.setText(f"the time is {strTime}")
                 speak(f"the time is {strTime}")
 
-            elif 'who are you' in statement or 'what can you do' in statement:
+            elif 'who' and 'you' in statement or 'what' and 'do' in statement:
                 time.sleep(0.5)
-                self.label.setText('I am SW1 version 1 point 1 your persoanl assistant. I am programmed to meet your needs')
-                speak('I am SW1 version 1 point 1 your persoanl assistant. I am programmed to meet your needs')
+                self.label.setText('I am SW1 version 1.2 your persoanl assistant. \nI am programmed to meet your needs')
+                speak('I am SW1 version 1 point 2 your persoanl assistant. I am programmed to meet your needs')
 
 
             elif "made you" in statement or "created you" in statement or "discovered you" in statement:
@@ -276,7 +285,7 @@ class MyWindow(QMainWindow):
                 self.label.setText("I was built by vultorio")
                 speak("I was built by vultorio")
 
-            elif "open stackoverflow" in statement:
+            elif "stackoverflow" in statement:
                 time.sleep(0.5)
                 webbrowser.open_new_tab("https://stackoverflow.com/login")
                 self.label.setText("Here is stackoverflow")
@@ -352,38 +361,48 @@ class MyWindow(QMainWindow):
                 self.label.setText(results)
                 speak(results)
 
-            elif "what's mean" in statement:
-                statement = statement.replace("what's mean", "")
-                print(statement)
-                self.label.setText("in which language do you want to translate?")
-                speak("in which language do you want to translate?")
-                language=takeCommand()
-                language = language.replace("in", "")
-                translator= Translator(from_lang="english",to_lang=language)
-                translation = translator.translate(statement)
-                print (translation)
-                self.label.setText(statement+" in "+language+" mean with \nmy english accent"+translation)
-                speak(statement+" in "+language+" mean with my english accent"+translation)
+            elif "translate" in statement or "what's mean" in statement:
+
+                if "in" in statement:                     
+                    if "in french" in statement:
+                        language = "french"
+                    if "in german" in statement:
+                        language = "german"
+                    if "in spanish" in statement:
+                        language = "spanish"
+                    print("hello")
+                    statement = statement.replace("translate", "")
+                    statement = statement.replace("what's mean", "")
+                    statement = statement.replace("in german", "")
+                    statement = statement.replace("in french", "")
+                    statement = statement.replace("in spanish", "")
+                    print(statement)
+                    translator= Translator(from_lang="english",to_lang=language)
+                    translation = translator.translate(statement)
+                    print (translation)
+                    self.label.setText(statement+" in "+language+" mean with \nmy english accent "+translation)
+                    speak(statement+" in "+language+" mean with my english accent "+translation)
+
+                else:
+                    statement = statement.replace("translate", "")
+                    statement = statement.replace("what's mean", "")
+                    print(statement)
+                    self.label.setText("in witch languge do you want to translate?")
+                    speak("in witch languge do you want to translate?")
+                    statement = takeCommand().lower()
+                    translator= Translator(from_lang="english",to_lang=statement)
+                    translation = translator.translate(statement)
+                    print (translation)
+                    self.label.setText(statement+" in "+language+" mean with \nmy english accent "+translation)
+                    speak(statement+" in "+language+" mean with my english accent "+translation)
 
 
-            elif "translate" in statement:
-            	#if "in" in statement:
-            		
-                statement = statement.replace("translate", "")
-                print(statement)
-                self.label.setText("in which language do you want to translate?")
-                speak("in which language do you want to translate?")
-                language=takeCommand()
-                language = language.replace("in", "")
-                translator= Translator(from_lang="english",to_lang=language)
-                translation = translator.translate(statement)
-                print (translation)
-                self.label.setText(statement+" in "+language+" mean with \nmy english accent"+translation)
-                speak(statement+" in "+language+" mean with my english accent"+translation)
+
+
 
 
             else:
-                if statement != "sasa":
+                if statement != "False":
                     time.sleep(0.5)
                     webbrowser.open_new_tab(statement)
                     self.label.setText("here is what I found on the web for:\n" + statement)
@@ -412,7 +431,6 @@ def window():
     	}
     	QPushButton#b1:hover
     	{
-    		transform = QTransform()
     		color: #00FF40;
     	}
 
