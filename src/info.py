@@ -36,21 +36,21 @@ def takeCommand():
 
 def exist():
 	try:
-	    My_file=open('info.json')
+	    My_file=open('info_user.json')
 	    My_file.close()
-	    print("File found!")
+	    print("you have already complete info_user.")
 	    isExist = True
 	except FileNotFoundError:
-	    print("Files not exist")
+	    print("info_user file not exist")
 	    isExist = False
 
 	if isExist == False:
 	    get_info()
 
-infoFile = "info.json"
+infoFile = "info_user.json"
 
 def get_info():
-	file = open("info.json", "w+")
+	file = open("info_user.json", "w+")
 	isi = True
 	speak("what is your name?")
 	statement = takeCommand().lower()
@@ -60,6 +60,7 @@ def get_info():
 	speak("How old are you?")
 	statement = takeCommand().lower()
 	statement = statement.replace("i am", "")
+	statement = statement.replace("years old", "")
 	sAge = statement
 	print(sAge)
 	speak("What is your country?")
@@ -67,6 +68,8 @@ def get_info():
 	statement = statement.replace("my country is", "")
 	sCountry = statement
 	print(sCountry)
+	speak("this is what i know about you. Your name is " + sName + ", you have " + sAge + " years old, you leave in " + sCountry)
+	speak("you can modify this information at any time by modifying the infoUser.json file")
 
 	def write_info(name, age, country):
 
@@ -81,9 +84,5 @@ def read_info(what):
 		uInfo = literal_eval(uInfo)
 		uInfo = uInfo[what]
 		return uInfo
-
-
-
-
 
 
